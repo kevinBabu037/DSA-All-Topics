@@ -1,0 +1,479 @@
+
+
+import 'dart:collection';
+
+
+class Node {
+  int data;
+  Node? left, right;
+  Node(this.data);
+}
+///////treee///////
+class Tree {
+  Node? root ;
+
+  //insertion
+  insertion(int data) {
+    Node newnode = Node(data);
+    Node? currentNode = root;
+    
+    if (currentNode == null) {
+      root = newnode;
+      return;
+    }
+    while (true) {
+      if (data < currentNode!.data) {
+        if (currentNode.left == null) {
+          currentNode.left = newnode;
+          break;
+        } else {
+          currentNode = currentNode.left;
+        }
+      } else {
+        if (currentNode.right == null) {
+          currentNode.right = newnode;
+          break;
+        } else {
+          currentNode = currentNode.right;
+        }
+      }
+    }
+  }
+
+  //searching
+  contains(int data) {
+    Node? currentNode = root;
+    while (currentNode != null) {
+      if (data < currentNode.data) {
+        currentNode = currentNode.left;
+      } else if (data > currentNode.data) {
+        currentNode = currentNode.right;
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  //remove
+   delete(int data){
+    deleteNode(root, data);
+   }
+   
+ Node? deleteNode(Node? root, int data) {
+    if (root == null) {
+      return null;
+    }
+    
+    if (data < root.data) {
+      root.left = deleteNode(root.left, data);
+    } else if (data > root.data) {
+      root.right = deleteNode(root.right, data);
+    } else {
+      //here we check the cases
+      //case:1//no childerns
+      if (root.right == null && root.left == null) {
+        return null;
+      }
+      //case:2//if only one clild
+      if (root.right == null) {
+        return root.left;
+      } else if (root.left == null) {
+        return root.right;
+      }
+      //else it will be case 3// 2 children
+      root.data = min(root.right!);
+      root.right = deleteNode(root.right, root.data);
+    }
+    return root;
+  }
+
+ int min(Node root) {
+    if (root.left == null) {
+      return root.data;
+    } else {
+      return min(root.left!);
+    }
+  }
+
+//inorder
+  printInorder(Node? root) {
+    if (root == null) {
+      return;
+    }
+    printInorder(root.left);
+    print(root.data);
+    printInorder(root.right);
+  }
+
+//preorder
+  printPreorder(Node? root) {
+    if (root == null) {
+      return;
+    }
+    print(root.data);
+    printPreorder(root.left);
+    printPreorder(root.right);
+  }
+
+  //postorder
+  printPostorder(Node? root) {
+    if (root == null) {
+      return;
+    }
+    printPostorder(root.left);
+    printPostorder(root.right);
+    print(root.data);
+  }
+
+ bool bstValidation(Node? root) {
+    if (root == null) {
+      return true;
+    }
+    List<int> inorderValues = [];
+    
+    bstInorderTraversal(root, inorderValues);
+   
+    for (int i = 1; i < inorderValues.length; i++) {
+      if (inorderValues[i] <= inorderValues[i - 1]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void bstInorderTraversal(Node? root, List<int> inorderValues) {
+    if (root == null){ 
+      return;
+    }
+    if (root.left != null){
+      bstInorderTraversal(root.left, inorderValues);
+    }
+    inorderValues.add(root.data);
+    if (root.right != null){
+      bstInorderTraversal(root.right, inorderValues);
+    }
+  }
+}
+
+
+//////////// heap //////
+
+
+
+
+
+//max heap
+class MaxHeap {
+  List<int> heap = [];
+
+  maxInsert(int value) {
+    heap.add(value);
+    heapifyUp(heap.length - 1);
+  }
+
+  heapifyUp(int index) {
+    while (index > 0) {
+      int parent = (index - 1) ~/ 2;
+      if (heap[index] > heap[parent]) {
+        int temp = heap[index];
+        heap[index] = heap[parent];
+        heap[parent] = temp;
+        index = parent;
+      } else {
+        break;
+      }
+    }
+  }
+
+  delete() {
+    if (heap.isEmpty) {
+      return ; 
+    }
+    return deleteMax();
+  }
+
+  int deleteMax() {
+    int maxval = heap[0];
+    heap[0] = heap.removeLast();
+    heapifydown(0);
+    return maxval;
+  }
+
+  heapifydown(int index){
+    int leftChild = (2 * index) + 1;
+    int rightChild = (2 * index) + 2;
+    int largest = index;
+    if (leftChild < heap.length && heap[leftChild] > heap[largest]) {
+      largest = leftChild;
+    }
+    if (rightChild < heap.length && heap[rightChild] > heap[largest]) {
+      largest = rightChild;
+    }
+    if (largest != index) {
+      int temp = heap[index];
+      heap[index] = heap[largest];
+      heap[largest] = temp;
+      heapifydown(largest);
+    }
+  }
+}
+
+//minheap
+class MinHeap {
+  List<int> heap = [];
+
+  minInsert(int value) {
+    heap.add(value);
+    heapifyup(heap.length - 1);
+  }
+
+  heapifyup(int index) {
+    while (index > 0) {
+      int parent = (index - 1) ~/ 2;
+      if (heap[index] < heap[parent]) {
+        int temp = heap[index];
+        heap[index] = heap[parent];
+        heap[parent] = temp;
+        index = parent;
+      } else {
+        break;
+      }
+    }
+  }
+
+  delete() {
+    if (heap.isEmpty) {
+      return null;
+    }
+    return deleteMin();
+  }
+
+  deleteMin() {
+    int minval = heap[0];
+    heap[0] = heap.removeLast();
+    heapifyDown(0);
+    return minval;
+  }
+
+  heapifyDown(int index) {
+    int leftChild = (2 * index) + 1;
+    int rightChild = (2 * index) + 2;
+    int smallest = index;
+
+    if (leftChild < heap.length && heap[leftChild] < heap[smallest]) {
+      smallest = leftChild;
+    }
+    if (rightChild < heap.length && heap[rightChild] < heap[smallest]) {
+      smallest = rightChild;
+    }
+
+    if (smallest != index) {
+      int temp = heap[index];
+      heap[index] = heap[smallest];
+      heap[smallest] = temp;
+      heapifyDown(smallest);
+    }
+  }
+}
+
+
+//heapify and build
+class MaxHeapBuild {
+  List<int> buildedHeap = [];
+
+  MaxHeapBuild(this.buildedHeap);
+
+  buildHeap(){
+    for (int i = (buildedHeap.length - 1) ~/ 2; i >= 0; i--) {
+      maxHeapify(i, buildedHeap.length);
+    }
+  }
+
+  maxHeapify(int index, int heapSize) {
+    int leftChild = (2 * index) + 1;
+    int rightChild = (2 * index) + 2;
+    int largest = index;
+    if (leftChild < heapSize && buildedHeap[leftChild] > buildedHeap[largest]) {
+      largest = leftChild;
+    }
+    if (rightChild < heapSize && buildedHeap[rightChild] > buildedHeap[largest]) {
+      largest = rightChild;
+    }
+    if (largest != index) {
+      int temp = buildedHeap[index];
+      buildedHeap[index] = buildedHeap[largest];
+      buildedHeap[largest] = temp;
+      maxHeapify(largest, heapSize);
+    }
+  }
+}
+
+heapSort(List<int> arr) {
+  MaxHeapBuild build = MaxHeapBuild(arr);
+  build.buildHeap();
+  for (int i = arr.length - 1; i >= 0; i--) {
+    int temp = arr[i];
+    arr[i] = arr[0];
+    arr[0] = temp;
+    build.maxHeapify(0, i);
+  }
+  print(arr);
+}
+
+
+
+
+
+//////// trie ////////////    
+ 
+
+class TrieNode {
+  Map<String, TrieNode>? children;
+  bool? endOfWord;
+
+  TrieNode() {
+    children = {};
+    endOfWord = false;
+  }
+}
+
+class Trie {
+  TrieNode root = TrieNode();
+   
+  insert(String word) {
+    TrieNode currentNode = root;
+    for (int i = 0; i < word.length; i++) {
+      String char = word[i];
+      if (!currentNode.children!.containsKey(char)) {
+        currentNode.children![char] = TrieNode();
+      }
+      currentNode = currentNode.children![char]!;
+    }
+    currentNode.endOfWord = true;
+  }
+  
+  contains(String word) {
+    TrieNode? current = root;
+    for (int i = 0; i < word.length; i++) {
+      String char = word[i];
+      if (!current!.children!.containsKey(char)) {
+        return false;
+      }
+      current = current.children![char];
+    }
+    return current!.endOfWord;
+  }
+
+  searchWithPrefix(String word) {
+    TrieNode? current = root;
+    for (String letter in word.split('')) {
+      if (!current!.children!.containsKey(letter)) {
+        return false;
+      }
+      current = current.children![letter];
+    }
+    return true;
+  }
+
+  getAllWords(String prefix) {
+    TrieNode? current = root;
+    for (String letter in prefix.split('')) {
+      if (!current!.children!.containsKey(letter)) {
+        return [];
+      }
+      current = current.children![letter];
+    }
+    return suggesting(current!, prefix);
+  }
+
+ List<String> suggesting(TrieNode current, String prefix) {
+    List<String> wordslst = [];
+    if (current.endOfWord!) {
+      wordslst.add(prefix);
+    }
+    for (String char in current.children!.keys) {
+      wordslst.addAll(suggesting(current.children![char]!, prefix + char));
+    }
+    return wordslst;
+  }
+}
+
+
+
+////////// graph ////////
+
+
+
+
+
+
+
+class Graph {
+  Map<int, List<int>>? vertexList;
+  Graph() {
+    vertexList = {};
+  }
+
+  addVertex(int vertex) {
+    if (!vertexList!.containsKey(vertex)) {
+      vertexList![vertex] = [];
+    }
+  }
+
+  addEdge(int fromVertex, int toVertex) {
+    if (!vertexList!.containsKey(fromVertex)) {
+      addVertex(fromVertex);
+    }
+    if (!vertexList!.containsKey(toVertex)) {
+      addVertex(toVertex);
+    }
+    vertexList![fromVertex]!.add(toVertex);
+  }
+
+  removeEdge(int fromVertex, int toVertex) {
+    if (vertexList!.containsKey(fromVertex)) {
+      vertexList![fromVertex]!.remove(toVertex);
+    }
+  }
+
+  bfs(int startingVertex) {
+    Set<int> visited = {};
+    Queue<int> queue = Queue<int>();
+
+    visited.add(startingVertex);
+    queue.add(startingVertex);
+    while (queue.isNotEmpty) {
+      int currentVertex = queue.removeFirst();
+      print(currentVertex);
+      List<int>? adjacentVertex = vertexList![currentVertex];
+      if (adjacentVertex != null) {
+        for (int vertex in adjacentVertex) {
+          // print(vertex);
+          if (!visited.contains(vertex)) {
+            visited.add(vertex);
+            queue.add(vertex);
+          }
+        }
+      }
+    }
+  }
+
+  dfs(int startingVertex) {
+    Set<int> visited = Set<int>();
+    dfsRecursive(int currentVertex) {
+      visited.add(currentVertex);
+      print(currentVertex);
+      List<int>? adjacentVertex = vertexList![currentVertex];
+      if (adjacentVertex != null) {
+        for (int vertex in adjacentVertex) {
+          if (!visited.contains(vertex)) {
+            dfsRecursive(vertex);
+          }
+        }
+      }
+    }
+
+    dfsRecursive(startingVertex);
+  }
+}

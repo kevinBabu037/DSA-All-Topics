@@ -1,0 +1,317 @@
+
+//stack //push//pop//
+class Node{
+
+  Node ? next;
+  int data;
+
+  Node(this.data);
+}
+
+class Stack{
+  
+  Node ? top;
+
+  push(int data){
+   Node newNode=Node(data);
+  
+   if(top==null){
+    top=newNode;
+   }else{
+    newNode.next=top;
+   }
+   top=newNode;
+
+  }
+
+   
+   pop(){
+    if(top==null){
+      print('stack underFlow');
+      return ;
+    }
+    top=top!.next;
+   }
+
+   display(){
+    Node? temp=top;
+   
+   while(temp!=null){
+     print(temp.data);
+     temp=temp.next;
+   } 
+   }
+
+  
+
+    void reverse() {
+    Stack reversedStack = Stack();
+
+    // Push elements from current stack to the reversed stack
+    Node? temp = top;
+    while (temp != null) {
+      reversedStack.push(temp.data);
+      temp = temp.next;
+    }
+
+    // Assign the top of the reversed stack to the original stack
+    top = reversedStack.top;
+  }
+   
+}
+
+
+
+//Queue//enQueue//deQueue//
+
+class Qnode{
+  Qnode? next;
+  int data;
+  Qnode(this.data);
+}
+
+
+class Queue{
+ 
+Qnode ? front;
+Qnode ? rear;
+
+ enQueue(int data){
+    Qnode newNode =Qnode(data);
+    if(rear==null){
+      front=rear=newNode;
+      return;
+    }
+    rear!.next=newNode;
+    rear=newNode;
+ }
+
+ 
+
+ deQueue(){
+  if(front==null){
+    print('empty');
+    return;
+  }
+  front=front!.next;
+  if(front==null){
+    rear=null;
+  }
+ }
+
+ display(){
+  Qnode? temp=front;
+  while(temp!=null){
+   print(temp.data);
+   temp=temp.next;
+  }
+
+ }
+
+ 
+
+  void recursionDisplay(Qnode? node) {
+    if (node == null) {
+      return;
+    }
+    print(node.data);
+    recursionDisplay(node.next);
+  }
+
+}
+
+
+// hash table ////
+
+
+
+
+class HashTable {
+  int size;
+  List? arr;
+  HashTable(this.size) {
+    arr = List.filled(size, null);
+  }
+  hash(key) {
+    if (key is int) {
+      return key % size;
+    }
+    num hashindex = 0;
+    for (int i = 0; i < key.length; i++) {
+      hashindex = (hashindex + key.codeUnitAt(i)) % size;
+    }
+    return hashindex ;
+  }
+
+  //insertion
+  insertion(key, value) {
+    int hashindex = hash(key);
+    while (arr![hashindex] != null) {
+      hashindex = (hashindex + 1) % size;
+    }
+    arr![hashindex] = value;
+  }
+
+  //deletion
+  deletion(key) {
+    int hashindex = hash(key);
+    arr![hashindex] = null;
+  }
+
+  get(key) {
+    int hashindex = hash(key);
+    return arr![hashindex];
+  }
+
+  display() {
+    for (int i = 0; i < arr!.length; i++) {
+      if (arr![i] != null) {
+        print('Index $i: ${arr![i]}');
+      }
+    }
+  }
+}
+
+
+//////////sorting//////////
+///bubbleSort//
+
+
+bubbleSort(List arr){
+  
+  for(int i=0;i<arr.length;i++){
+    for(int j=0;j<arr.length-1;j++){
+      if(arr[j]>arr[j+1]){
+        int temp=arr[j];
+        arr[j]=arr[j+1];
+        arr[j+1]=temp;
+      }
+    }
+  }
+  print(arr);
+
+}
+
+
+///insertionSort////
+
+ insertionSort(List<int> arr) {
+
+  for (int i = 1; i <arr.length; ++i) {
+    int temp = arr[i];
+    int j = i - 1;
+        
+
+        //going reverse to index 0 by checking//
+    while (j >= 0 && arr[j] > temp) {
+      arr[j + 1] = arr[j];
+      j --;
+    }
+      
+     // inserting in the  sorted Position// 
+    arr[j + 1] = temp;
+  }
+  print(arr);
+
+}
+
+
+//selection sort ///
+
+
+
+void selectionSort(List arr) {
+  
+
+      
+  for (int i = 0; i < arr.length-1; i++) {
+    int min = i;
+    
+    //finding the min value//
+    for (int j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[min]) {
+        min = j;
+      }
+    }
+    
+    //swaping the min //
+    if (min != i) {
+      int temp = arr[i];
+      arr[i] = arr[min];
+      arr[min] = temp;
+    }
+  }
+  print(arr);
+}
+
+
+//quick sort///
+
+quickSort(List a, int start, int end) {
+  if (start < end) {
+    int res = pivote(a, start, end);
+    quickSort(a, start, res - 1);
+    quickSort(a, res + 1, end);
+  }
+}
+
+int pivote(List a, int start, int end) {
+  int pivote = a[end];
+  int i = start - 1;
+  for (int j = start; j <= end; j++) {
+    if (a[j] < pivote) {
+      i++;
+      int temp = a[i];
+      a[i] = a[j];
+      a[j] = temp;
+    }
+  }
+  int temp = a[i + 1];
+  a[i + 1] = a[end];
+  a[end] = temp;
+  return i +1;
+}
+
+
+
+/////merge sort/////
+
+mergesort(List<int>list,int lb,int ub){
+  if(lb<ub){
+    int mid=(lb+ub)~/2;
+    mergesort(list, lb,mid);
+    mergesort(list,mid+1, ub);
+    merge(list, lb, mid, ub);
+  }
+}
+
+merge(List<int>arr,int lb,int mid,int ub){
+  int i=lb;
+  int j=mid+1;
+  int k=lb;
+  List<int>b=List.filled(arr.length, 0);
+  while(i<=mid&&j<=ub){
+    if(arr[i]<arr[j]){
+      b[k]=arr[i];
+      i++;
+    }else{
+      b[k]=arr[j];
+      j++;
+    }
+    k++;
+  }
+  while(i<=mid){
+    b[k]=arr[i];
+    i++;
+    k++;
+  }
+  while(j<=ub){
+  b[k]=arr[j];
+  j++;
+  k++;
+}
+for(int x=lb;x<=ub;x++){
+  arr[x]=b[x];
+}
+
+}
